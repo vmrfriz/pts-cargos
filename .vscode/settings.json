@@ -1,0 +1,28 @@
+{
+    "files.exclude": {
+        ".editorconfig": true,
+        ".env.example": true,
+        ".htaccess": true,
+        ".styleci.yml": true,
+        ".vscode": true,
+        "**/*.map": true,
+        "app/Console": true,
+        "app/Exceptions": true,
+        "app/Providers": true,
+        "artisan": true,
+        "bootstrap": true,
+        "composer.json": true,
+        "composer.lock": true,
+        "config": true,
+        "package.json": true,
+        "phpunit.xml": true,
+        "public/*.*": true,
+        "routes/channels.php": true,
+        "routes/console.php": true,
+        "server.php": true,
+        "storage": true,
+        "tests": true,
+        "webpack.mix.js": true,
+        "yarn.lock": true
+    }
+}
