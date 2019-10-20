@@ -28,6 +28,7 @@
                         <a class="nav-link" href="/">Вернуться на сайт</a>
                     </li>
                 </ul>
+                
                 <a href="/subscribe" class="btn btn-primary">Подписаться на грузы</a>
             </div>
         </nav>

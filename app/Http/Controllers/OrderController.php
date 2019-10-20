@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use Illuminate\Http\Request;
+use App\Helpers\ATrucks as ATrucks;
 
 class OrderController extends Controller
 {
@@ -14,7 +15,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        ATrucks::getOrders();
+        // ATrucks::all();
+        $orders = Order::all();
+        return view('orders.index');
     }
 
     /**
@@ -69,7 +72,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        return view('orders.edit', compact($order));
     }
 
     /**
@@ -92,6 +95,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        Order::destroy($order->id);
+        return redirect("/");
     }
 }

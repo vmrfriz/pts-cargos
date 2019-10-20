@@ -1,8 +1,9 @@
 <?php
 
-namespace app\Helpers\ATrucks;
+namespace App\Helpers;
 
 class ATrucks {
+    public static $api_url;
     private static $token;
 
     /**
@@ -45,12 +46,12 @@ class ATrucks {
      * @var    params_array  Параметры запроса
      * @return XML           Ответ сервера в формате XML
      */
-    private function request(string $api_method, array $params_array = array()): string {
+    private static function request(string $api_method, array $params_array = array()): string {
         $params_array['auth_key'] = self::$token;
 
         $ch = curl_init();
         curl_setopt_array($ch, [
-            CURLOPT_URL            => $this->api_url . $api_method,
+            CURLOPT_URL            => self::$api_url . $api_method,
             CURLOPT_HTTPHEADER     => array('Content-Type: multipart/form-data'),
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $params_array,
