@@ -9,6 +9,7 @@ class SubscriberController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * /subscribe
      *
      * @return \Illuminate\Http\Response
      */
@@ -19,23 +20,26 @@ class SubscriberController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     * /subscribe
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     return view('subscriber.new');
+    // }
 
     /**
      * Store a newly created resource in storage.
+     * /{id}/edit
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $token = 'TODO';
+        return redirect('/'.$token.'/edit');
     }
 
     /**
@@ -57,7 +61,7 @@ class SubscriberController extends Controller
      */
     public function edit(Subscriber $subscriber)
     {
-        return view('subscriber.edit');
+        return view('subscriber.edit', compact($subscriber));
     }
 
     /**

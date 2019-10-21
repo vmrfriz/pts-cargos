@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+@if($orders ?? false)
 <table class="table table-responsive-lg mb-0 bg-white rounded-lg overflow-hidden">
     <thead>
         <tr class="font-weight-bold">
@@ -16,13 +17,18 @@
         </tr>
     </thead>
     <tbody>
+    @foreach($orders as $order)
         <tr>
             <td>Москва - Санкт-Петербург</td>
             <td>ТНП</td>
             <td>23.10.2019 &ndash; 12:30</td>
             <td class="text-right" style="line-height:1em">37 000 ₽<br><small class="text-muted">37,6 ₽/км</small></td>
-            <td class="text-right"><a href="/atrucks/kj2nj-23d42-23d42-dcvw4-ewvf2" class="btn btn-sm btn-outline-primary">Просмотреть</a></td>
+            <td class="text-right"><a href="/atrucks_kj2nj-23d42-23d42-dcvw4-ewvf2" class="btn btn-sm btn-outline-primary">Просмотреть</a></td>
         </tr>
+    @endforeach
     </tbody>
 </table>
+@else
+<div class="text-center h4 text-muted py-5">Пусто, пока что</div>
+@endif
 @endsection

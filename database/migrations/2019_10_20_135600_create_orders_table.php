@@ -22,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('unloading_time')->nullable();
             $table->json('load_worktime')->nullable();
             $table->json('unload_worktime')->nullable();
+            $table->json('valid_until');
             $table->enum('load_type', ['верхняя', 'боковая', 'задняя'])->nullable();
             $table->enum('unload_type', ['верхняя', 'боковая', 'задняя'])->nullable();
             $table->text('comment')->nullable();

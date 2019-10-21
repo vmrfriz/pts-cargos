@@ -27,7 +27,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        return view('orders.create');
     }
 
     /**
@@ -38,7 +38,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $worker = Worker::create(request()->all());
+        return redirect("/id{$worker->id}");
     }
 
     /**
@@ -47,21 +48,21 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show($site, $id)
+    public function show(Order $order)
     {
-        switch ($site) {
-            case 'atrucks':
-                $order = ATrucks::getOrder($id);
-                break;
-            case 'other':
-                $order = [];
-                break;
-            default:
-                return abort(404);
-                break;
-        }
+        // switch ($site) {
+        //     case 'atrucks':
+        //         $order = ATrucks::getOrder($id);
+        //         break;
+        //     case 'other':
+        //         $order = [];
+        //         break;
+        //     default:
+        //         return abort(404);
+        //         break;
+        // }
 
-        return view('orders.index', $order);
+        return view('orders.index', compact($order));
     }
 
     /**
@@ -84,7 +85,8 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        //
+        $order->update(request()->all());
+        return redirect('orders.show');
     }
 
     /**

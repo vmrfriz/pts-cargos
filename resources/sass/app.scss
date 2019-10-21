@@ -1,1 +1,12 @@
 //
+body {
+    background-color: #f4f4f4;
+}
+
+.opacity {
+    &-0 { opacity: 0}
+
+    @for $i from 1 through 10 {
+        &-#{$i}0 { opacity: ($i / 10); }
+    }
+}
