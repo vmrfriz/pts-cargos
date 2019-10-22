@@ -15,7 +15,6 @@
         "composer.lock": true,
         "config": true,
         "node_modules": true,
-        "package.json": true,
         "phpunit.xml": true,
         "public/*.*": true,
         "routes/channels.php": true,
