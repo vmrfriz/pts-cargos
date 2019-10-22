@@ -22,24 +22,24 @@
                 <div class="form-group">
                     <label for="load_points">Адреса погрузки</label>
                     @if(old('load_points'))
-                    @foreach(old('load_points') as $load_point)
-                    @if(old('load_points')[$loop->index] == '')
-                        @continue
-                    @endif
-                    <input id="load_points" class="form-control form-control-sm mb-2 {{ $errors->has('load_points') ? 'is-invalid' : '' }}" type="text" name="load_points[]" value="{{ old('load_points')[$loop->index] }}" required="required">
-                    @endforeach
+                        @foreach(old('load_points') as $load_point)
+                            @if(old('load_points')[$loop->index] == '')
+                                @continue
+                            @endif
+                            <input id="load_points" class="form-control form-control-sm mb-2 {{ $errors->has('load_points') ? 'is-invalid' : '' }}" type="text" name="load_points[]" value="{{ old('load_points')[$loop->index] }}" required="required">
+                        @endforeach
                     @endif
                     <input class="form-control form-control-sm mb-2 js-new-input opacity-50" type="text" name="load_points[]">
                 </div>
                 <div class="form-group">
                     <label for="unload_points">Адреса выгрузки</label>
                     @if(old('unload_points'))
-                    @foreach(old('unload_points') as $unload_points)
-                    @if(old('unload_points')[$loop->index] == '')
-                        @continue
-                    @endif
-                    <input id="unload_points" class="form-control form-control-sm mb-2 {{ $errors->has('unload_points') ? 'is-invalid' : '' }}" type="text" name="unload_points[]" value="{{ old('unload_points')[$loop->index] }}" required="required">
-                    @endforeach
+                        @foreach(old('unload_points') as $unload_points)
+                            @if(old('unload_points')[$loop->index] == '')
+                                @continue
+                            @endif
+                            <input id="unload_points" class="form-control form-control-sm mb-2 {{ $errors->has('unload_points') ? 'is-invalid' : '' }}" type="text" name="unload_points[]" value="{{ old('unload_points')[$loop->index] }}" required="required">
+                        @endforeach
                     @endif
                     <input class="form-control form-control-sm mb-2 js-new-input opacity-50" type="text" name="unload_points[]">
                 </div>
@@ -47,14 +47,14 @@
                     <div class="col">
                         <div class="form-group">
                             <label for="loading-time">Время погрузки</label>
-                            <input id="loading_time" type="datetime" class="form-control form-control-sm mb-2 {{ $errors->has('loading_time') ? 'is-invalid' : '' }}" name="loading_time" value="{{ old('loading_time') }}" placeholder="01.02.2001 10:02" required="required">
+                            <input id="loading_time" type="text" class="form-control form-control-sm mb-2 datetimepicker {{ $errors->has('loading_time') ? 'is-invalid' : '' }}" name="loading_time" value="{{ old('loading_time') }}" placeholder="01.02.2001 10:02" required="required">
                             <input id="loading_time" type="text" class="form-control form-control-sm mb-2 {{ $errors->has('loading_comment') ? 'is-invalid' : '' }}" name="loading_comment" value="{{ old('loading_comment') }}" placeholder="Комментарий, режим работы, ...">
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-group">
                             <label for="unload_time">Время выгрузки</label>
-                            <input id="unloading_time" type="datetime" class="form-control form-control-sm mb-2 {{ $errors->has('unloading_time') ? 'is-invalid' : '' }}" name="unloading_time" value="{{ old('unloading_time') }}" placeholder="02.01.2001 20:10">
+                            <input id="unloading_time" type="text" class="form-control form-control-sm mb-2 datetimepicker {{ $errors->has('unloading_time') ? 'is-invalid' : '' }}" name="unloading_time" value="{{ old('unloading_time') }}" placeholder="02.01.2001 20:10">
                             <input id="unloading_comment" type="text" class="form-control form-control-sm mb-2 {{ $errors->has('unloading_comment') ? 'is-invalid' : '' }}" name="unloading_comment" value="{{ old('unloading_comment') }}" placeholder="Комментарий, режим работы, ...">
                         </div>
                     </div>

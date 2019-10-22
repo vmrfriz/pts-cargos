@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use Illuminate\Http\Request;
-use App\Helpers\ATrucks as ATrucks;
+// use App\Helpers\ATrucks as ATrucks;
 
 class OrderController extends Controller
 {
@@ -51,11 +51,17 @@ class OrderController extends Controller
             'length'            => 'nullable|numeric',
         ]);
 
-        $data = $validatedData;
+        $data = array_filter($validatedData);
         $data['load_points'] = json_encode(array_filter($data['load_points']));
         $data['unload_points'] = json_encode(array_filter($data['unload_points']));
+        $data['loading_time'] = Carbon::parse($data['loading_time'])->format('d.m.Y H:i');
+        $data['unloading_time'] = Carbon::parse($data['unloading_time'])->format('d.m.Y H:i');
 
-        $order = Order::create(request()->all());
+        // echo gettype($data) . '<br>';
+        // var_dump($data);
+        // exit;
+
+        $order = Order::create($data);
         return redirect("/id{$order->id}");
     }
 

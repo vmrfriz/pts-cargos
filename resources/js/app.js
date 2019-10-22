@@ -1,7 +1,9 @@
-// import './bootstrap';
+import $ from 'jquery'
+import './bootstrap';
+import 'moment'
+import './bootstrap-datetimepicker';
 
-document.addEventListener('DOMContentLoaded', function () {
-
+$(function() {
     function newInputListener(event) {
         var target = event.target
         switch (event.type) {
@@ -70,5 +72,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 nextElem.remove()
             }
         }
+    });
+
+    $('.datetimepicker').datetimepicker({
+        // locale: 'ru',
+        // minDate: new Date(),
+        // format: 'DD.MM.YYYY'
     });
 });
