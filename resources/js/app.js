@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'change':
             case 'keyup':
                 if (target.value.length && !target.nextElementSibling) {
-                    console.log(event)
                     var newInput = document.createElement('input')
                     newInput.classList.add('form-control', 'form-control-sm', 'mb-2', 'js-new-input', 'opacity-50')
                     newInput.type = 'text';
@@ -62,4 +61,14 @@ document.addEventListener('DOMContentLoaded', function () {
     for (var i = 0; i < newInputs.length; i++) {
         newInputs[i].addEventListeners('mouseover focus mouseout blur change keyup', newInputListener);
     }
+
+    document.querySelectorAll('button[type="reset"],input[type="reset"]').addEventListeners('click', function (event) {
+        var newInputs = document.getElementsByClassName('js-new-input')
+        for (var i = newInputs.length - 1; i >= 0; i--) {
+            var nextElem = newInputs[i].nextElementSibling
+            if (nextElem && nextElem.classList.contains('js-new-input')) {
+                nextElem.remove()
+            }
+        }
+    });
 });
