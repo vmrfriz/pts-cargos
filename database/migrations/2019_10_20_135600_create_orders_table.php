@@ -15,17 +15,21 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->json('route');
-            $table->double('kilometrage');
+            $table->json('load_points');
+            $table->json('unload_points');
             $table->double('price');
-            $table->dateTime('loading_time')->nullable();
+            $table->double('distance')->nullable();
+            $table->dateTime('loading_time');
             $table->dateTime('unloading_time')->nullable();
-            $table->json('load_worktime')->nullable();
-            $table->json('unload_worktime')->nullable();
-            $table->json('valid_until');
-            $table->enum('load_type', ['верхняя', 'боковая', 'задняя'])->nullable();
-            $table->enum('unload_type', ['верхняя', 'боковая', 'задняя'])->nullable();
-            $table->text('comment')->nullable();
+            $table->string('loading_comment')->nullable();
+            $table->string('unloading_comment')->nullable();
+            // $table->json('valid_until');
+            // $table->enum('load_type', ['верхняя', 'боковая', 'задняя'])->nullable();
+            // $table->enum('unload_type', ['верхняя', 'боковая', 'задняя'])->nullable();
+            // $table->text('comment')->nullable();
+            $table->string('cargo_type')->nullable();
+            $table->double('weight')->nullable();
+            $table->double('length')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

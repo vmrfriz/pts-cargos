@@ -38,8 +38,25 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $worker = Worker::create(request()->all());
-        return redirect("/id{$worker->id}");
+        $validatedData = $request->validate([
+            'load_points'       => 'required|array',
+            'unload_points'     => 'required|array',
+            'price'             => 'required|integer',
+            'loading_time'      => 'required|date_format:d.m.Y H:i',
+            'unloading_time'    => 'nullable|date_format:d.m.Y H:i',
+            'loading_comment'   => 'nullable|string',
+            'unloading_comment' => 'nullable|string',
+            'cargo_type'        => 'required|string',
+            'weight'            => 'required|numeric',
+            'length'            => 'nullable|numeric',
+        ]);
+
+        $data = $validatedData;
+        $data['load_points'] = json_encode(array_filter($data['load_points']));
+        $data['unload_points'] = json_encode(array_filter($data['unload_points']));
+
+        $order = Order::create(request()->all());
+        return redirect("/id{$order->id}");
     }
 
     /**
@@ -48,8 +65,10 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show(string $id, string $db = 'pts')
     {
+        dd(['db' => $db, 'id' => $id]);
+
         // switch ($site) {
         //     case 'atrucks':
         //         $order = ATrucks::getOrder($id);
@@ -61,8 +80,16 @@ class OrderController extends Controller
         //         return abort(404);
         //         break;
         // }
+        return view('orders.show', compact(null));
+    }
 
-        return view('orders.index', compact($order));
+    public function reserve(string $id, string $db = 'pts') {
+        return redirect('/reserved')->with(['db' => $db, 'id' => $id]);
+    }
+
+    public function reserved(string $id, string $db = 'pts') {
+
+        return view('orders.reserved', ['id' => $id, 'db' => $db]);
     }
 
     /**
