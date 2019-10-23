@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import './bootstrap';
+import 'bootstrap'
 import 'moment'
-import './bootstrap-datetimepicker';
+import 'bootstrap4-datetimepicker'
 
 $(function() {
     function newInputListener(event) {
@@ -75,8 +75,20 @@ $(function() {
     });
 
     $('.datetimepicker').datetimepicker({
-        // locale: 'ru',
-        // minDate: new Date(),
-        // format: 'DD.MM.YYYY'
+        locale: 'ru',
+        minDate: new Date(),
+        // minViewMode: 'years',
+        format: 'DD.MM.YYYY HH:mm',
+        icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-check',
+            clear: 'fa fa-trash',
+            close: 'fa fa-times'
+        }
     });
 });

@@ -38,6 +38,7 @@
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://kit.fontawesome.com/71b4759b3f.js"></script>
     @yield('scripts')
 </body>
 </html>

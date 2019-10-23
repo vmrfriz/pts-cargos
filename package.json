@@ -14,13 +14,17 @@
         "babel-loader": "^8.0.6",
         "bootstrap": "^4.3.1",
         "cross-env": "^5.1",
-        "eonasdan-bootstrap-datetimepicker": "git+https://github.com/Eonasdan/bootstrap-datetimepicker.git",
         "jquery": "^3.4.1",
         "laravel-mix": "^4.0.7",
         "lodash": "^4.17.13",
         "moment": "^2.24.0",
+        "popper.js": "^1.16.0",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.15.2",
-        "sass-loader": "^7.1.0"
+        "sass-loader": "^7.1.0",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "dependencies": {
+        "bootstrap4-datetimepicker": "^5.2.3"
     }
 }
