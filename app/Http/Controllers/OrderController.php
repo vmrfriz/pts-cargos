@@ -109,9 +109,10 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit($id, $db = 'pts')
     {
-        return view('orders.edit', compact($order));
+        $order = Order::findOrFail($id);
+        return view('orders.edit', compact('order'));
     }
 
     /**
@@ -121,10 +122,10 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Order $order, $id, $db = 'pts')
     {
         $order->update(request()->all());
-        return redirect('orders.show');
+        return redirect('id'.$id);
     }
 
     /**
