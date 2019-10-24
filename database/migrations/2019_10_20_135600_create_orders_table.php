@@ -19,8 +19,8 @@ class CreateOrdersTable extends Migration
             $table->json('unload_points');
             $table->double('price');
             $table->double('distance')->nullable();
-            $table->dateTime('loading_time');
-            $table->dateTime('unloading_time')->nullable();
+            $table->timestamp('loading_time');
+            $table->timestamp('unloading_time')->nullable();
             $table->string('loading_comment')->nullable();
             $table->string('unloading_comment')->nullable();
             // $table->json('valid_until');

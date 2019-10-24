@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use Illuminate\Http\Request;
+use DateTime;
 // use App\Helpers\ATrucks as ATrucks;
 
 class OrderController extends Controller
@@ -17,7 +18,10 @@ class OrderController extends Controller
     {
         // ATrucks::all();
         $orders = Order::all();
-        return view('orders.index');
+        // foreach ($orders as $order) {
+            // $order->load_points();
+        // }
+        return view('orders.index', compact('orders'));
     }
 
     /**
@@ -52,14 +56,12 @@ class OrderController extends Controller
         ]);
 
         $data = array_filter($validatedData);
-        $data['load_points'] = json_encode(array_filter($data['load_points']));
-        $data['unload_points'] = json_encode(array_filter($data['unload_points']));
-        $data['loading_time'] = Carbon::parse($data['loading_time'])->format('d.m.Y H:i');
-        $data['unloading_time'] = Carbon::parse($data['unloading_time'])->format('d.m.Y H:i');
-
-        // echo gettype($data) . '<br>';
-        // var_dump($data);
-        // exit;
+        $data['load_points'] = array_filter($data['load_points']);
+        $data['unload_points'] = array_filter($data['unload_points']);
+        $data['loading_time'] = DateTime::createFromFormat('d.m.Y H:i', $data['loading_time']);
+        if (array_key_exists('unloading_time', $data)) {
+            $data['unloading_time'] = DateTime::createFromFormat('d.m.Y H:i', $data['unloading_time']);
+        }
 
         $order = Order::create($data);
         return redirect("/id{$order->id}");
@@ -73,20 +75,23 @@ class OrderController extends Controller
      */
     public function show(string $id, string $db = 'pts')
     {
-        dd(['db' => $db, 'id' => $id]);
+        // dd(['db' => $db, 'id' => $id]);
 
-        // switch ($site) {
-        //     case 'atrucks':
-        //         $order = ATrucks::getOrder($id);
-        //         break;
-        //     case 'other':
-        //         $order = [];
-        //         break;
-        //     default:
-        //         return abort(404);
-        //         break;
-        // }
-        return view('orders.show', compact(null));
+        switch ($db) {
+            case 'pts':
+                $order = Order::findOrFail($id);
+                break;
+            case 'atrucks':
+                $order = ATrucks::find($id);
+                break;
+            case 'other':
+                $order = [];
+                break;
+            default:
+                return abort(404);
+                break;
+        }
+        return view('orders.show', compact('order'));
     }
 
     public function reserve(string $id, string $db = 'pts') {
@@ -128,9 +133,19 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy($id, $db = 'pts')
     {
-        Order::destroy($order->id);
+        switch($db) {
+            case 'pts':
+                Order::findOrFail($id)->delete();
+                break;
+            case 'atrucks':
+                // $order = ATrucks::find($id);
+                break;
+            default:
+                redirect('/');
+                break;
+        }
         return redirect("/");
     }
 }

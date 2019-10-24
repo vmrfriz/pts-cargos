@@ -31,6 +31,7 @@ Route::post('/{db}_{id}', 'OrderController@reserve');
 Route::get('/reserved', 'OrderController@reserved');
 //
 Route::put('/{db}_{id}', 'OrderController@update');//->middleware('auth');
+Route::delete('/id{id}', 'OrderController@destroy');//->middleware('auth');
 Route::delete('/{db}_{id}', 'OrderController@destroy');//->middleware('auth');
 Route::get('/edit/{db}_{id}', 'OrderController@edit');//->middleware('auth');
 
