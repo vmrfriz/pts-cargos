@@ -32,7 +32,7 @@
     },
     "autoload": {
         "files": [
-            "app/Helpers/ATrucks.php"
+            "app/Helpers/XMLParser.php"
         ],
         "psr-4": {
             "App\\": "app/"

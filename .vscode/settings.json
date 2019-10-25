@@ -13,7 +13,6 @@
         "bootstrap": true,
         "composer.json": true,
         "composer.lock": true,
-        "config": true,
         "node_modules": true,
         "phpunit.xml": true,
         "public/*.*": true,

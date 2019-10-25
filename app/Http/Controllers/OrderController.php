@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 use Illuminate\Http\Request;
 use DateTime;
-// use App\Helpers\ATrucks as ATrucks;
+use App\ATrucks;
 
 class OrderController extends Controller
 {
@@ -16,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // ATrucks::all();
+        dd(ATrucks::all());
         $orders = Order::all();
         // foreach ($orders as $order) {
             // $order->load_points();
