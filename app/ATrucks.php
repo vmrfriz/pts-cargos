@@ -15,10 +15,6 @@ class ATrucks extends Model
     //
     public static function all($columns = ['*']) {
         $xml = self::sendRequest('get_orders');
-        $XMLParser = new XMLParser($xml);
-        // $obj = $XMLParser->XMLParser($xml);
-        return $XMLParser->getOutput();
-        // return $obj->getOutput();
     }
 
     public static function find(string $uuid) {
@@ -27,8 +23,64 @@ class ATrucks extends Model
         ]);
     }
 
-    private static function formatArray($array) {
-        return $array;
+    private static function formatData($array) {
+        dump($array);
+        $root = $array['atrucks:root'];
+
+        $companies = [];
+        foreach ($root['atrucks:companies'] as $company) {
+            $id = $company['company_id'];
+            $companies[$id] = $company;
+        }
+
+        $orders = [];
+        foreach ($root['atrucks:orders'] as $order) {
+            // dump($order);
+            $id = $order['order_id'];
+            $orders[$id] = $order;
+            $orders[$id]['cargos'] = [];
+            $orders[$id]['auctions'] = [];
+        }
+
+        foreach ($root['atrucks:cargoes'] as $cargo) {
+            $id = $cargo['cargo_id'];
+            $company_id = $cargo['company_id'];
+            dd([
+                'orders' => $orders,
+                'cargo' => $cargo,
+            ]);
+            // dump([
+            //     'id' => $id,
+            //     'company' => $company_id,
+            //     'cargo' => $cargo,
+            // ]);
+            $cargo['company'] = $companies[$company_id];
+            array_push($orders[$id]['cargos'], $cargo);
+        }
+
+        foreach ($root['atrucks:auction_results'] as $auction) {
+            $id = $auction['order_id'];
+            array_push($order[$id]['auctions'], $auction);
+        }
+
+        // $order['']
+        // $weight = $order['order_id']
+        // array_push($result, [
+        //     'id' => 'atrucks_' . $order['order_id'],
+        //     'load_points' => $order['comment'],
+        //     'unload_points' => $order['comment'],
+        //     'price' => (int) $order['price'] * 0.88,
+        //     // 'distance' => $order['comment'],
+        //     'loading_time' => $order['comment'],
+        //     'unloading_time' => $order['comment'],
+        //     'loading_comment' => $order['comment'],
+        //     'unloading_comment' => $order['comment'],
+        //     'cargo_type' => $order['comment'],
+        //     'comment' => $order['comment'],
+        //     'weight' => $order['comment'],
+        //     'length' => $order['comment'],
+        // ]);
+        return $orders;
     }
 
     private static function sendRequest(string $api_method, array $params = []) {
@@ -58,6 +110,10 @@ class ATrucks extends Model
             return false;
         }
         curl_close($ch);
-        return $xml;
+        dd($xml);
+
+        $XMLParser = new XMLParser($xml);
+        $orders = $XMLParser->getOutput();
+        return self::formatData($orders);
     }
 }

@@ -16,7 +16,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        dd(ATrucks::all());
+        $orders = ATrucks::all();
+        dd($orders);
+        
         $orders = Order::all();
         // foreach ($orders as $order) {
             // $order->load_points();

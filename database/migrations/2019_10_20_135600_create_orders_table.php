@@ -26,7 +26,7 @@ class CreateOrdersTable extends Migration
             // $table->json('valid_until');
             // $table->enum('load_type', ['верхняя', 'боковая', 'задняя'])->nullable();
             // $table->enum('unload_type', ['верхняя', 'боковая', 'задняя'])->nullable();
-            // $table->text('comment')->nullable();
+            $table->text('comment')->nullable();
             $table->string('cargo_type')->nullable();
             $table->double('weight')->nullable();
             $table->double('length')->nullable();

@@ -19,13 +19,13 @@ class XMLParser  {
     private $output = array();
     private $status;
 
-    public function XMLParser($xml){
+    public function __construct($xml) {
         $this->rawXML = $xml;
         $this->parser = xml_parser_create();
         return $this->parse();
     }
 
-    private function parse(){
+    private function parse() {
 
         $parser = $this->parser;
 
@@ -70,7 +70,7 @@ class XMLParser  {
                     // else send in tag
                     array_push($stack,  $val['tag']);
                 }
-                $this->setArrayValue($this->output, $stack, $val['value']);
+                $this->setArrayValue($this->output, $stack, $val['value'] ?? '');
                 array_pop($stack);
             }
             $increment++;
