@@ -16,13 +16,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = ATrucks::all();
-        dd($orders);
-        
-        $orders = Order::all();
-        // foreach ($orders as $order) {
-            // $order->load_points();
-        // }
+        $atrucks_orders = ATrucks::all();
+        $local_orders = Order::all()->toArray();
+        $orders = array_merge($local_orders, $atrucks_orders);
+        // dd($orders);
         return view('orders.index', compact('orders'));
     }
 

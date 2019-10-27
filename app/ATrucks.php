@@ -14,13 +14,162 @@ class ATrucks extends Model
 
     //
     public static function all($columns = ['*']) {
-        $xml = self::sendRequest('get_orders');
+        $imported_array = self::sendRequest('get_orders');
+        return self::ordersFormat($imported_array);
     }
 
     public static function find(string $uuid) {
-        return self::sendRequest('get_orders', [
+        $imported_array = self::sendRequest('get_orders', [
             'order_id' => $uuid
         ]);
+        return self::ordersFormat($imported_array)[0];
+    }
+
+    private static function ordersFormat($imported_array) {
+        $data = [];
+        $root = $imported_array['atrucks:root'];
+        foreach ($root['atrucks:orders'] as $order) {
+            array_push($data, array(
+                'id' => 'atrucks_' . $order['order_id'],
+                'load_points' => self::getLoadPointsFromRoute($order['atrucks:route']),
+                'unload_points' => self::getUnloadPointsFromRoute($order['atrucks:route']),
+                'price' => (float) $order['price'],
+                'distance' => (float) self::getDistanceFromRoute($order['atrucks:route']),
+                'loading_time' => self::getEventDatetimeFromRoute('loading', $order['atrucks:route']),
+                'unloading_time' => self::getEventDatetimeFromRoute('unloading', $order['atrucks:route']),
+                'loading_comment' => self::getRouteComments($order['atrucks:route'], ['loading']),
+                'unloading_comment' => self::getRouteComments($order['atrucks:route'], ['unloading']),
+                'comment' => $order['comment'],
+                'cargo_type' => (string) self::getCargoTypesFromOrder($order, $root['atrucks:cargoes']),
+                'weight' => (float) self::getOrderCargosWeight($order, $root['atrucks:cargoes']),
+                'length ' => null,
+            ));
+        }
+        return $data;
+    }
+
+    private static function getRouteComments($route, array $filter = ['loading', 'unloading']): string {
+        $comments = [];
+        foreach ($route as $point) {
+            if (!in_array($point['waypoint_type'], $filter))
+                continue;
+            if ($point['comment'])
+                array_push($comments, $point['comment']);
+        }
+        return implode("\n", $comments);
+    }
+
+    private static function getEventDatetimeFromRoute($event, $route) {
+        $datetimes = [];
+        foreach ($route as $point) {
+            array_push($datetimes, date(trim($point['arrival_date'] . ' ' . $point['arrival_time'])));
+        }
+        sort($datetimes);
+        if ($event == 'loading') {
+            $result = $datetimes[0];
+        } else {
+            $result = end($datetimes);
+        }
+        return $result;
+    }
+
+    private static function getCargoTypesFromOrder($order, $cargos): string {
+        $cargo_types = [];
+        $order_cargos = $order['cargo_ids'];
+        foreach ($cargos as $cargo) {
+            $cargo_id = $cargo['cargo_id'];
+            if (!in_array($cargo_id, $order_cargos))
+                continue;
+            $cargo_type = implode(', ', $cargo['pack_types']);
+            array_push($cargo_types, $cargo_type);
+        }
+        return implode(', ', $cargo_types);
+    }
+
+    private static function getOrderCargosWeight($order, $cargos): float {
+        $weight = 0;
+        $order_cargos = $order['cargo_ids'];
+        foreach ($cargos as $cargo) {
+            $cargo_id = $cargo['cargo_id'];
+            if (!in_array($cargo_id, $order_cargos))
+                continue;
+            $weight += (double) $cargo['weight'];
+        }
+        return $weight;
+    }
+
+    private static function getLoadPointsFromRoute($route): array {
+        return self::getPointsFromRoute('loading', $route);
+    }
+
+    private static function getUnloadPointsFromRoute($route): array {
+        return self::getPointsFromRoute('unloading', $route);
+    }
+
+    private static function getPointsFromRoute($waypoint_type, $route): array {
+        $points = [];
+        foreach ($route as $point) {
+            if ($point['waypoint_type'] != $waypoint_type)
+                continue;
+            $first_key = array_key_first($point['address']);
+            $address = $point['address'][$first_key]; //['free_form'];
+            $city = self::getCityByAddress($address);
+            array_push($points, $city);
+        }
+        return $points;
+    }
+
+    private static function getCityByAddress(string $address): string {
+        $response_json = self::getCachedGeocoderResponse($address);
+        $response_data = (
+            $response_json
+            ? json_decode($response_json)
+            : json_decode(self::getYandexGeocoderResponse($address))
+        );
+
+        $address_components = $response_data->response->GeoObjectCollection->featureMember[0]->GeoObject->metaDataProperty->GeocoderMetaData->Address->Components;
+        $area = '';
+        $city = '';
+
+        foreach ($address_components as $a) {
+            if ($a->kind == 'locality') {
+                $city = $a->name;
+                break;
+            }
+            if ($a->kind == 'area' && !$area)
+                $area = $a->name;
+        }
+
+        return $city ?: $area;
+    }
+
+    private static function getCachedGeocoderResponse($address) {
+        $data = YandexGeocoder::where('address', $address)->first();
+        return $data ? $data->response : false;
+    }
+
+    private static function getYandexGeocoderResponse($address) {
+        $ch = curl_init();
+        $ymaps_token = config()->get('api.yandexmaps.token');
+        $request_data = array(
+            'format'  => 'json',
+            'apikey'  => $ymaps_token,
+            'geocode' => $address,
+        );
+        curl_setopt_array($ch, [
+            CURLOPT_URL            => 'https://geocode-maps.yandex.ru/1.x/?'.http_build_query($request_data),
+            CURLOPT_RETURNTRANSFER => true
+        ]);
+        $response_json = curl_exec($ch);
+        YandexGeocoder::create([
+            'address' => $address,
+            'response' => $response_json,
+        ]);
+        return $response_json;
+    }
+
+    private static function getDistanceFromRoute($route): float {
+        return 0;
     }
 
     private static function formatData($array) {
@@ -110,10 +259,9 @@ class ATrucks extends Model
             return false;
         }
         curl_close($ch);
-        dd($xml);
 
         $XMLParser = new XMLParser($xml);
         $orders = $XMLParser->getOutput();
-        return self::formatData($orders);
+        return $orders;
     }
 }
