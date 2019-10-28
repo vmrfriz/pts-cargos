@@ -6,7 +6,7 @@
 
 @section('content')
 @if($orders ?? false)
-<table class="table table-responsive-lg mb-0 bg-white rounded-lg overflow-hidden">
+<table class="table table-responsive-lg mb-4 bg-white rounded-lg overflow-hidden">
     <thead>
         <tr class="font-weight-bold">
             <td class="border-top-0">Направление</td>
@@ -34,7 +34,8 @@
                 @endif
             </td>
             <td>{{ $order['cargo_type'] }}</td>
-            {{-- <td>{!! DateTime::createFromFormat('Y-m-d H:i:s', $order['loading_time'])['format']('d.m.Y &\n\d\a\s\h; H:i') !!}</td> --}}
+            {{-- <td>{!! dump($order['loading_time']) !!}</td> --}}
+            <td>{!! DateTime::createFromFormat('Y-m-d H:i:s', $order['loading_time'])->format('d.m.Y &\n\d\a\s\h; H:i') !!}</td>
             <td class="text-right" style="line-height:1em">
                 {{ number_format($order['price'], 0, '.', ' ') }} ₽
                 <br>

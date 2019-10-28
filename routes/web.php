@@ -25,7 +25,7 @@ Route::post('/', 'OrderController@store');//->middleware('auth');
 Route::get('/create', 'OrderController@create');//->middleware('auth');
 // Show order
 Route::get('/id{id}', 'OrderController@show');
-Route::get('/{db}_{id}', 'OrderController@show');
+Route::get('/{db}_{id}', 'OrderController@show'); //->where(['db' => '\d+', 'id' => '[a-z0-9-]+']);
 // Edit
 Route::get('/id{id}/edit', 'OrderController@edit');//->middleware('auth');
 Route::get('/{db}_{id}/edit', 'OrderController@edit');//->middleware('auth');

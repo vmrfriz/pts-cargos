@@ -72,9 +72,9 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(string $id, string $db = 'pts')
+    public function show()
     {
-        // dd(['db' => $db, 'id' => $id]);
+        dd(['db' => $db, 'id' => $id]);
 
         switch ($db) {
             case 'pts':

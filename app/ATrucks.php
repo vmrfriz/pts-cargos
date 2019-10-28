@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Error\Warning;
 use App\Helpers\XMLParser;
+use DateTime;
 
 class ATrucks extends Model
 {
@@ -33,7 +34,7 @@ class ATrucks extends Model
                 'id' => 'atrucks_' . $order['order_id'],
                 'load_points' => self::getLoadPointsFromRoute($order['atrucks:route']),
                 'unload_points' => self::getUnloadPointsFromRoute($order['atrucks:route']),
-                'price' => (float) $order['price'],
+                'price' => round((float) $order['price'] * 0.88, -3, PHP_ROUND_HALF_DOWN),
                 'distance' => (float) self::getDistanceFromRoute($order['atrucks:route']),
                 'loading_time' => self::getEventDatetimeFromRoute('loading', $order['atrucks:route']),
                 'unloading_time' => self::getEventDatetimeFromRoute('unloading', $order['atrucks:route']),
@@ -62,7 +63,15 @@ class ATrucks extends Model
     private static function getEventDatetimeFromRoute($event, $route) {
         $datetimes = [];
         foreach ($route as $point) {
-            array_push($datetimes, date(trim($point['arrival_date'] . ' ' . $point['arrival_time'])));
+            $date = null;
+            if ($point['arrival_date']) {
+                $time = ($point['arrival_time'] ?: '00:00:00');
+                $time .= strlen($time) == 5 ? ':00' : '';
+                $date = $point['arrival_date'].' '.$time;
+            } else {
+                $date = date('Y-m-d h:i:s', strtotime('tomorrow'));
+            }
+            array_push($datetimes, $date);
         }
         sort($datetimes);
         if ($event == 'loading') {
@@ -70,6 +79,7 @@ class ATrucks extends Model
         } else {
             $result = end($datetimes);
         }
+        // dump($result);
         return $result;
     }
 
@@ -140,7 +150,8 @@ class ATrucks extends Model
                 $area = $a->name;
         }
 
-        return $city ?: $area;
+        $result = $city ?: $area;
+        return preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $result);
     }
 
     private static function getCachedGeocoderResponse($address) {
