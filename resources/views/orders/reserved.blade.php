@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('title')
-    Рейс: {{ implode(' - ', array_merge($order['load_points'], $order['unload_points'])) }}
+    Резервирование заявки
 @endsection
 
 @section('content')
@@ -86,8 +86,6 @@
                     <form action="{{ $_SERVER['REQUEST_URI'] }}" method="POST" onsubmit="confirm('Вы действительно хотите удалить заявку?') || event.preventDefault()">
                         @csrf
                         @method('DELETE')
-                        <input type="hidden" name="id" value="{{ $id }}">
-                        <input type="hidden" name="db" value="{{ $db }}">
                         <button type="submit" class="btn btn-outline-danger">Удалить</button>
                     </form>
                 </div>
@@ -99,36 +97,7 @@
         <div class="bg-white rounded-lg p-3">
             <h5>Бронирование</h5>
             <hr>
-            <form action="{{ Request::url() }}" method="POST">
-                @csrf
-                <input type="hidden" name="id" value="{{ $id }}">
-                <input type="hidden" name="db" value="{{ $db }}">
-                <div class="form-group">
-                    <label for="company_inn">ИНН компании</label>
-                    <input id="company_inn" class="form-control mask-inn" type="text" name="company_inn" required="required">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Номер телефона</label>
-                    <input id="phone" class="form-control mask-phone" type="text" name="phone" required="required">
-                </div>
-                <div class="row mt-4">
-                    <div class="col-12 col-md-5 mb-3">
-                        @if ($order['price'])
-                        <input type="submit" class="btn btn-primary w-100" name="reservation" value="Забронировать" onclick="this.form.querySelector('#new-price').required = false">
-                        @endif
-                    </div>
-                    <div class="d-md-none text-center col-12 mb-3">или</div>
-                    <div class="col-12 col-md-7 mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-danger mask-money" placeholder="Предложить сумму" aria-label="Предложить сумму" aria-describedby="button-reserve" id="new-price" name="new-price" required="required">
-                            <div class="input-group-append">
-                                <input class="btn btn-danger" type="submit" id="button-reserve" name="counter-offer" value="Запросить">
-                            </div>
-                        </div>
-                        <div style="font-size: 11px">в случае запроса суммы, гарантия своевременного бронирования груза снижается, а время ожидания увеличивается</div>
-                    </div>
-                </div>
-            </form>
+            <p>Ваш запрос на бронирование принят в обработку нашими менеджерами. Ожидайте, с Вами свяжутся в ближайшее время.</p>
         </div>
     </div>
 </div>

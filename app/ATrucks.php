@@ -43,7 +43,7 @@ class ATrucks extends Model
                 'comment' => $order['comment'],
                 'cargo_type' => (string) self::getCargoTypesFromOrder($order, $root['atrucks:cargoes']),
                 'weight' => (float) self::getOrderCargosWeight($order, $root['atrucks:cargoes']),
-                'length ' => null,
+                'length' => null,
             ));
         }
         return $data;
@@ -137,10 +137,14 @@ class ATrucks extends Model
             : json_decode(self::getYandexGeocoderResponse($address))
         );
 
-        $address_components = $response_data->response->GeoObjectCollection->featureMember[0]->GeoObject->metaDataProperty->GeocoderMetaData->Address->Components;
+        $address_components = $response_data->response->GeoObjectCollection->featureMember;
+        if ($address_components) {
+            $address_components = $address_components[0]->GeoObject->metaDataProperty->GeocoderMetaData->Address->Components;
+        }
         $area = '';
         $city = '';
 
+        if ($address_components)
         foreach ($address_components as $a) {
             if ($a->kind == 'locality') {
                 $city = $a->name;
@@ -150,7 +154,7 @@ class ATrucks extends Model
                 $area = $a->name;
         }
 
-        $result = $city ?: $area;
+        $result = $city ?: $area ?: $address;
         return preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $result);
     }
 
