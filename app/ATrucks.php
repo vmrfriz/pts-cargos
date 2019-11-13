@@ -90,7 +90,10 @@ class ATrucks extends Model
             $cargo_id = $cargo['cargo_id'];
             if (!in_array($cargo_id, $order_cargos))
                 continue;
-            $cargo_type = implode(', ', $cargo['pack_types']);
+            $cargo_type =
+                $cargo['pack_types']
+                ? implode(', ', $cargo['pack_types'])
+                : '';
             array_push($cargo_types, $cargo_type);
         }
         return implode(', ', $cargo_types);

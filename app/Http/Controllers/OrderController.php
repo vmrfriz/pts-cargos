@@ -83,10 +83,10 @@ class OrderController extends Controller
 
         switch ($db) {
             case 'pts':
-                $order = Order::findOrFail($id);
+                $order = Order::findOrFail($id)->toArray();
                 break;
             case 'atrucks':
-                $order = ATrucks::find($id)->toArray();
+                $order = ATrucks::find($id);
                 break;
             case 'other':
                 $order = [];
@@ -103,10 +103,10 @@ class OrderController extends Controller
 
         switch ($post['db']) {
             case 'pts':
-                $order = Order::findOrFail($post['id']);
+                $order = Order::findOrFail($post['id'])->toArray();
                 break;
             case 'atrucks':
-                $order = ATrucks::find($post['id'])->toArray();
+                $order = ATrucks::find($post['id']);
                 break;
             case 'other':
                 $order = [];
@@ -133,7 +133,7 @@ class OrderController extends Controller
             'Выгрузка'       => $order['unload_points'],
             'Бюджет'         => $order['price'],
             'Время погрузки' => $order['loading_time'],
-            'Время выгрузки' => $order['unlodaing_time'],
+            'Время выгрузки' => $order['unloading_time'],
             'Типы груза'     => $order['cargo_type'],
             'Вес'            => $order['weight'] ? $order['weight'] . ' т' : null,
             'Длина'          => $order['length'] ? $order['length'] . ' м' : null,
@@ -155,7 +155,7 @@ class OrderController extends Controller
                 }
                 $e_msg .= '</ul>';
             } else {
-                $e_msg .= $val;
+                $e_msg .= $val . '<br>';
             }
             $e_msg .= PHP_EOL;
         }
@@ -178,28 +178,22 @@ class OrderController extends Controller
         }
         $tg_msg = trim($tg_msg);
 
-        // mail($to, $subject, $e_msg, $headers);
-        // dump($e_msg);
+        mail($to, $subject, $e_msg, $headers);
         Telegram::sendMessage('-1001479907659', $tg_msg, ['parse_mode' => 'Markdown']);
-        dump(Telegram::getResponse());
 
-        // return redirect('/reserved')->with('db', $post['db'])->with('id', $post['id']);
+        return redirect('/reserved')->with('db', $post['db'])->with('id', $post['id']);
     }
 
     public function reserved() {
-
-        dd([
-            'page' => 'reserved',
-            'db' => session('db'),
-            'id' => session('id'),
-        ]);
+        $db = session('db');
+        $id = session('id');
 
         switch ($db) {
             case 'pts':
-                $order = Order::findOrFail($id);
+                $order = Order::findOrFail($id)->toArray();
                 break;
             case 'atrucks':
-                $order = ATrucks::find($id)->toArray();
+                $order = ATrucks::find($id);
                 break;
             case 'other':
                 $order = [];

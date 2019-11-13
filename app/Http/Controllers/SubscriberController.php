@@ -38,6 +38,7 @@ class SubscriberController extends Controller
      */
     public function store(Request $request)
     {
+        Subscriber::create($request);
         $token = 'TODO';
         return redirect('/'.$token.'/edit');
     }
@@ -73,7 +74,9 @@ class SubscriberController extends Controller
      */
     public function update(Request $request, Subscriber $subscriber)
     {
-        //
+        $subscriber->update(request()->all());
+        $token = 'TODO';
+        return redirect('/'.$token.'/edit');
     }
 
     /**

@@ -9,7 +9,7 @@ class Telegram extends Model
     private static $response;
     private static $responseAssoc;
     //
-    public static function sendMessage($chat_id, $message, $params = null) {
+    public static function sendMessage($chat_id, $message, $params = []) {
         $params = self::getAllowedParams($params, ['chat_id', 'text', 'parse_mode', 'disable_web_page_preview', 'disable_notification', 'reply_to_message_id', 'reply_markup']);
         $params = array_merge($params, [
             'chat_id'    => $chat_id,
@@ -24,7 +24,7 @@ class Telegram extends Model
             return self::$responseAssoc->ok;
         } else if (gettype(self::$response) == 'string') {
             self::$responseAssoc = json_decode(self::$response);
-            return self::$responseAssoc->ok;
+            return self::$responseAssoc['ok'];
         }
         return false;
     }
@@ -33,7 +33,9 @@ class Telegram extends Model
         return self::$responseAssoc ?: self::$response;
     }
 
-    private static function getAllowedParams($params, $allowed_params) {
+    private static function getAllowedParams(array $params, array $allowed_params) {
+        if (!$allowed_params) return $params;
+        if (!$params) return [];
         return array_filter($params,
             function ($key) use ($allowed_params) {
                 return in_array($key, $allowed_params);
@@ -54,9 +56,12 @@ class Telegram extends Model
             CURLOPT_RETURNTRANSFER => true,
         ]);
         $response = curl_exec($ch);
-        dd($ch);
-        dd(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+        curl_close($ch);
+
         self::$response = $response;
         self::$responseAssoc = null;
+        dump($response);
+
+        return $response;
     }
 }
