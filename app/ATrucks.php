@@ -30,10 +30,14 @@ class ATrucks extends Model
         $data = [];
         $root = $imported_array['atrucks:root'];
         foreach ($root['atrucks:orders'] as $order) {
+            $load_points = self::getLoadPointsFromRoute($order['atrucks:route']);
+            $load_addr = $load_points['addr'];
+            $load_coords = $load_points['coord'];
             array_push($data, array(
                 'id' => 'atrucks_' . $order['order_id'],
-                'load_points' => self::getLoadPointsFromRoute($order['atrucks:route']),
-                'unload_points' => self::getUnloadPointsFromRoute($order['atrucks:route']),
+                'load_points' => $load_addr,
+                'load_coords' => $load_coords,
+                'unload_points' => self::getUnloadPointsFromRoute($order['atrucks:route'])['addr'],
                 'price' => round((float) $order['price'] * 0.88, -3, PHP_ROUND_HALF_DOWN),
                 'distance' => (float) self::getDistanceFromRoute($order['atrucks:route']),
                 'loading_time' => self::getEventDatetimeFromRoute('loading', $order['atrucks:route']),
@@ -120,16 +124,64 @@ class ATrucks extends Model
     }
 
     private static function getPointsFromRoute($waypoint_type, $route): array {
-        $points = [];
+        $loads_addr = [];
+        $loads_points = [];
         foreach ($route as $point) {
             if ($point['waypoint_type'] != $waypoint_type)
                 continue;
             $first_key = array_key_first($point['address']);
             $address = $point['address'][$first_key]; //['free_form'];
-            $city = self::getCityByAddress($address);
-            array_push($points, $city);
+            // $city = self::getCityByAddress($address);
+            $geoinfo = self::getGeoInfoByAddress($address);
+            $city = $geoinfo['city'];
+            $coord = $geoinfo['coords'];
+            array_push($loads_addr, $city);
+            array_push($loads_points, $coord);
         }
-        return $points;
+        return [
+            'addr' => $loads_addr,
+            'coord' => $loads_points,
+        ];
+    }
+
+    private static function getGeoInfoByAddress(string $address): array {
+        $response_json = self::getCachedGeocoderResponse($address);
+        $response_data = (
+            $response_json
+            ? json_decode($response_json)
+            : json_decode(self::getYandexGeocoderResponse($address))
+        );
+
+        $GeoObjectInfo = $response_data->response->GeoObjectCollection->featureMember;
+        if ($GeoObjectInfo) {
+            $address_components = $GeoObjectInfo[0]->GeoObject->metaDataProperty->GeocoderMetaData->Address->Components;
+        }
+        $area = '';
+        $city = '';
+
+        if ($address_components)
+        foreach ($address_components as $a) {
+            if ($a->kind == 'locality') {
+                $city = $a->name;
+                break;
+            }
+            if ($a->kind == 'area' && !$area)
+                $area = $a->name;
+        }
+
+        $cityName = $city ?: $area ?: $address;
+        $cityCoordsObj = $GeoObjectInfo[0]->GeoObject->boundedBy->Envelope;
+        $cityCoordsLower = explode(' ', $cityCoordsObj->lowerCorner);
+        $cityCoordsUpper = explode(' ', $cityCoordsObj->upperCorner);
+        $cityCoordsCenter = [
+            ($cityCoordsUpper[0] - $cityCoordsLower[0]) / 2 + $cityCoordsLower[0],
+            ($cityCoordsUpper[1] - $cityCoordsLower[1]) / 2 + $cityCoordsLower[1],
+        ];
+        $result = [
+            'city' => preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $cityName),
+            'coords' => $cityCoordsCenter,
+        ];
+        return $result;
     }
 
     private static function getCityByAddress(string $address): string {

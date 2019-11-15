@@ -4,6 +4,10 @@
 Грузы от ПромТранспортСервис
 @endsection
 
+@section('head')
+<script src="https://api-maps.yandex.ru/2.1/?apikey={{ config()->get('api.yandexmaps.token') }}&lang=ru_RU" type="text/javascript"></script>
+@endsection
+
 @section('content')
 @if($orders ?? false)
 <table class="table table-responsive-lg mb-4 bg-white rounded-lg overflow-hidden">
@@ -32,6 +36,7 @@
                 @if(count((array) $order['unload_points']) > 1)
                     <span class="badge badge-info">+{{ count((array) $order['unload_points']) - 1 }}</span>
                 @endif
+                <details><summary>Рейс</summary><pre>{{ array_key_exists('load_coords', $order) ? dump($order['load_coords'][0]) : '' }}</pre></details>
             </td>
             <td class="text-truncate" style="max-width:25%">{{ $order['cargo_type'] }}</td>
             {{-- <td>{!! dump($order['loading_time']) !!}</td> --}}
@@ -51,7 +56,44 @@
     @endforeach
     </tbody>
 </table>
+<div class="p-3 bg-white rounded-lg mb-4">
+    <div class="mb-3"><b>Точки погрузки на карте</b></div>
+    <div id="map" style="width: 100%; height: 300px"></div>
+</div>
 @else
 <div class="text-center h4 text-muted py-5">Пусто, пока что</div>
 @endif
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+    ymaps.ready(init);
+    function init(){
+        var mapCargos = new ymaps.Map("map", {
+            // center: [55.76, 37.64],
+            // zoom: 7
+        });
+        var coords = [
+            [56.023, 36.988],
+            [56.025, 36.981],
+            [56.020, 36.981],
+            [56.021, 36.983],
+            [56.027, 36.987]
+        ];
+
+        var cargosGeoObject = [];
+        for (var i = 0; i<coords.length; i++) {
+            cargosGeoObject[i] = new ymaps.GeoObject({
+                geometry: {
+                    type: "Point",
+                    coordinates: coords[i]
+                }
+            });
+        }
+
+        var cargosCluster = new ymaps.Clusterer();
+        cargosCluster.add(cargosGeoObject);
+        mapCargos.geoObjects.add(cargosCluster);
+    }
+</script>
 @endsection
