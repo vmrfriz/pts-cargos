@@ -29,6 +29,9 @@ class ATrucks extends Model
     private static function ordersFormat($imported_array) {
         $data = [];
         $root = $imported_array['atrucks:root'];
+        // $banned_uuid = array_filter($root['atrucks:companies'], function ($val, $key) {
+        //     return $val['name'] == 'Стекловолокно';
+        // })[0];
         foreach ($root['atrucks:orders'] as $order) {
             $load_points = self::getLoadPointsFromRoute($order['atrucks:route']);
             $load_addr = $load_points['addr'];
@@ -168,18 +171,17 @@ class ATrucks extends Model
             if ($a->kind == 'area' && !$area)
                 $area = $a->name;
         }
-
         $cityName = $city ?: $area ?: $address;
-        $cityCoordsObj = $GeoObjectInfo[0]->GeoObject->boundedBy->Envelope;
-        $cityCoordsLower = explode(' ', $cityCoordsObj->lowerCorner);
-        $cityCoordsUpper = explode(' ', $cityCoordsObj->upperCorner);
-        $cityCoordsCenter = [
-            ($cityCoordsUpper[0] - $cityCoordsLower[0]) / 2 + $cityCoordsLower[0],
-            ($cityCoordsUpper[1] - $cityCoordsLower[1]) / 2 + $cityCoordsLower[1],
-        ];
+        $cityCoordsObj = $GeoObjectInfo[0]->GeoObject->Point->pos; // ->boundedBy->Envelope;
+        // $cityCoordsLower = explode(' ', $cityCoordsObj->lowerCorner);
+        // $cityCoordsUpper = explode(' ', $cityCoordsObj->upperCorner);
+        $cityCoordsCenter = explode(' ', $cityCoordsObj); //[
+            // ($cityCoordsUpper[0] - $cityCoordsLower[0]) / 2 + $cityCoordsLower[0],
+            // ($cityCoordsUpper[1] - $cityCoordsLower[1]) / 2 + $cityCoordsLower[1],
+        // ];
         $result = [
             'city' => preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $cityName),
-            'coords' => $cityCoordsCenter,
+            'coords' => [$cityCoordsCenter[1], $cityCoordsCenter[0]],
         ];
         return $result;
     }

@@ -36,7 +36,6 @@
                 @if(count((array) $order['unload_points']) > 1)
                     <span class="badge badge-info">+{{ count((array) $order['unload_points']) - 1 }}</span>
                 @endif
-                <details><summary>Рейс</summary><pre>{{ array_key_exists('load_coords', $order) ? dump($order['load_coords'][0]) : '' }}</pre></details>
             </td>
             <td class="text-truncate" style="max-width:25%">{{ $order['cargo_type'] }}</td>
             {{-- <td>{!! dump($order['loading_time']) !!}</td> --}}
@@ -70,15 +69,15 @@
     ymaps.ready(init);
     function init(){
         var mapCargos = new ymaps.Map("map", {
-            // center: [55.76, 37.64],
-            // zoom: 7
+            center: [58.714424, 87.652627],
+            zoom: 3,
+            controls: [],
         });
+
         var coords = [
-            [56.023, 36.988],
-            [56.025, 36.981],
-            [56.020, 36.981],
-            [56.021, 36.983],
-            [56.027, 36.987]
+        @foreach($orders as $order)
+            {!! array_key_exists('load_coords', $order) ? json_encode($order['load_coords'][0]) . ',' : '' !!}
+        @endforeach
         ];
 
         var cargosGeoObject = [];
