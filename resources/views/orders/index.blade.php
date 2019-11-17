@@ -10,7 +10,7 @@
 
 @section('content')
 @if($orders ?? false)
-<table class="table table-responsive-lg mb-4 bg-white rounded-lg overflow-hidden">
+<table id="orders-table" class="table table-responsive-lg mb-4 bg-white rounded-lg overflow-hidden">
     <thead>
         <tr class="font-weight-bold">
             <td class="border-top-0">Направление</td>
@@ -94,5 +94,10 @@
         cargosCluster.add(cargosGeoObject);
         mapCargos.geoObjects.add(cargosCluster);
     }
+</script>
+<script>
+    $(document).ready(function() {
+        $('#orders-table').DataTable();
+    });
 </script>
 @endsection

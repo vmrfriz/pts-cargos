@@ -2,6 +2,7 @@ import $ from 'jquery'
 import 'bootstrap'
 import 'moment'
 import 'bootstrap4-datetimepicker'
+import 'jquery.dataTables.min.js'
 
 $(function() {
     function newInputListener(event) {
@@ -28,12 +29,10 @@ $(function() {
                     newInput.setAttribute('name', target.name)
                     newInput.addEventListeners('mouseover focus mouseout blur change keyup', newInputListener)
                     target.parentNode.append(newInput);
-                } else if (
-                    !target.value.length
-                    && target.nextElementSibling
-                    && !target.nextElementSibling.value.length
-                    && !target.nextElementSibling.nextElementSibling)
-                {
+                } else if (!target.value.length &&
+                    target.nextElementSibling &&
+                    !target.nextElementSibling.value.length &&
+                    !target.nextElementSibling.nextElementSibling) {
                     target.nextElementSibling.remove()
                 }
                 break
@@ -64,7 +63,7 @@ $(function() {
         newInputs[i].addEventListeners('mouseover focus mouseout blur change keyup', newInputListener);
     }
 
-    document.querySelectorAll('button[type="reset"],input[type="reset"]').addEventListeners('click', function (event) {
+    document.querySelectorAll('button[type="reset"],input[type="reset"]').addEventListeners('click', function(event) {
         var newInputs = document.getElementsByClassName('js-new-input')
         for (var i = newInputs.length - 1; i >= 0; i--) {
             var nextElem = newInputs[i].nextElementSibling
