@@ -38096,8 +38096,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var bootstrap4_datetimepicker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap4-datetimepicker */ "./node_modules/bootstrap4-datetimepicker/src/js/bootstrap-datetimepicker.js");
 /* harmony import */ var bootstrap4_datetimepicker__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap4_datetimepicker__WEBPACK_IMPORTED_MODULE_3__);
-!(function webpackMissingModule() { var e = new Error("Cannot find module 'jquery.dataTables.min.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-
 
 
 
@@ -38184,7 +38182,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
       clear: 'fa fa-trash',
       close: 'fa fa-times'
     }
-  });
+  }); // $('#orders').DataTable();
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()("table.js-sortable").tablesorter();
 });
 
 /***/ }),

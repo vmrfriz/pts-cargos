@@ -158,31 +158,36 @@ class ATrucks extends Model
         $GeoObjectInfo = $response_data->response->GeoObjectCollection->featureMember;
         if ($GeoObjectInfo) {
             $address_components = $GeoObjectInfo[0]->GeoObject->metaDataProperty->GeocoderMetaData->Address->Components;
-        }
-        $area = '';
-        $city = '';
+            $area = '';
+            $city = '';
 
-        if ($address_components)
-        foreach ($address_components as $a) {
-            if ($a->kind == 'locality') {
-                $city = $a->name;
-                break;
+            if ($address_components)
+            foreach ($address_components as $a) {
+                if ($a->kind == 'locality') {
+                    $city = $a->name;
+                    break;
+                }
+                if ($a->kind == 'area' && !$area)
+                    $area = $a->name;
             }
-            if ($a->kind == 'area' && !$area)
-                $area = $a->name;
+            $cityName = $city ?: $area ?: $address;
+            $cityCoordsObj = $GeoObjectInfo[0]->GeoObject->Point->pos; // ->boundedBy->Envelope;
+            // $cityCoordsLower = explode(' ', $cityCoordsObj->lowerCorner);
+            // $cityCoordsUpper = explode(' ', $cityCoordsObj->upperCorner);
+            $cityCoordsCenter = explode(' ', $cityCoordsObj); //[
+                // ($cityCoordsUpper[0] - $cityCoordsLower[0]) / 2 + $cityCoordsLower[0],
+                // ($cityCoordsUpper[1] - $cityCoordsLower[1]) / 2 + $cityCoordsLower[1],
+            // ];
+            $result = [
+                'city'   => preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $cityName),
+                'coords' => [$cityCoordsCenter[1], $cityCoordsCenter[0]],
+            ];
+        } else {
+            $result = [
+                'city'   => $address,
+                'coords' => null,
+            ];
         }
-        $cityName = $city ?: $area ?: $address;
-        $cityCoordsObj = $GeoObjectInfo[0]->GeoObject->Point->pos; // ->boundedBy->Envelope;
-        // $cityCoordsLower = explode(' ', $cityCoordsObj->lowerCorner);
-        // $cityCoordsUpper = explode(' ', $cityCoordsObj->upperCorner);
-        $cityCoordsCenter = explode(' ', $cityCoordsObj); //[
-            // ($cityCoordsUpper[0] - $cityCoordsLower[0]) / 2 + $cityCoordsLower[0],
-            // ($cityCoordsUpper[1] - $cityCoordsLower[1]) / 2 + $cityCoordsLower[1],
-        // ];
-        $result = [
-            'city' => preg_replace(['/посёлок городского типа/', '/посёлок/', '/село/'], ['пгт.', 'пос.', 'с.'], $cityName),
-            'coords' => [$cityCoordsCenter[1], $cityCoordsCenter[0]],
-        ];
         return $result;
     }
 

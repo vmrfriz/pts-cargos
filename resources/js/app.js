@@ -2,7 +2,6 @@ import $ from 'jquery'
 import 'bootstrap'
 import 'moment'
 import 'bootstrap4-datetimepicker'
-import 'jquery.dataTables.min.js'
 
 $(function() {
     function newInputListener(event) {
@@ -90,4 +89,7 @@ $(function() {
             close: 'fa fa-times'
         }
     });
+
+    // $('#orders').DataTable();
+    $("table.js-sortable").tablesorter();
 });
