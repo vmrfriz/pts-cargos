@@ -250,7 +250,6 @@ class ATrucks extends Model
     }
 
     private static function formatData($array) {
-        dump($array);
         $root = $array['atrucks:root'];
 
         $companies = [];
@@ -261,7 +260,6 @@ class ATrucks extends Model
 
         $orders = [];
         foreach ($root['atrucks:orders'] as $order) {
-            // dump($order);
             $id = $order['order_id'];
             $orders[$id] = $order;
             $orders[$id]['cargos'] = [];

@@ -3,7 +3,7 @@ import 'bootstrap'
 import 'moment'
 import 'bootstrap4-datetimepicker'
 
-$(function() {
+document.addEventListener('DOMContentLoaded', function () {
     function newInputListener(event) {
         var target = event.target
         switch (event.type) {
@@ -55,6 +55,7 @@ $(function() {
     }
     Node.prototype.addEventListeners = _addEventListeners
     NodeList.prototype.addEventListeners = _addEventListeners
+    HTMLCollection.prototype.addEventListeners = _addEventListeners
 
 
     var newInputs = document.getElementsByClassName('js-new-input');
@@ -89,7 +90,4 @@ $(function() {
             close: 'fa fa-times'
         }
     });
-
-    // $('#orders').DataTable();
-    $("table.js-sortable").tablesorter();
 });

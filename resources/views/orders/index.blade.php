@@ -14,7 +14,6 @@
 @endsection
 
 @section('content')
-
 <div class="bg-white mb-4 rounded-lg p-3">
     <form id="search">
         <div class="row">
@@ -224,5 +223,4 @@
         mapCargos.geoObjects.add(cargosCluster);
     }
 </script>
-<script src="{{ asset('js/jquery.tablesorter.min.js') }}"></script>
 @endsection

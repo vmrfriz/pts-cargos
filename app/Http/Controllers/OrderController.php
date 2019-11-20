@@ -128,7 +128,8 @@ class OrderController extends Controller
         }
 
         $msg = array_merge($msg, [
-            ''               => '---------- Рейс ----------',
+            ''               => '--------------------',
+            'Рейс'           => 'https://промтранспортсервис.рф/' . (is_int($order['id']) ? 'id' : '') . $order['id'],
             'Погрузка'       => $order['load_points'],
             'Выгрузка'       => $order['unload_points'],
             'Бюджет'         => $order['price'],
@@ -139,7 +140,7 @@ class OrderController extends Controller
             'Длина'          => $order['length'] ? $order['length'] . ' м' : null,
         ]);
 
-        $to = 'tldr@promtrans.pro';
+        $to = 'logist@promtrans.pro';
         $subject = 'Резервирование рейса через сайт';
         $headers = "Content-Type: text/html\nFrom: Promtrans <no-reply@promtrans.pro>";
 
@@ -255,6 +256,6 @@ class OrderController extends Controller
                 redirect('/');
                 break;
         }
-        return redirect("/");
+        return redirect('/');
     }
 }
